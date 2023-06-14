@@ -55,7 +55,7 @@ def login():
     cur.close()
 
     if user is not None:
-        session['email'] = user[0]
+        session['email'] = email
         session['nombre'] = user[1]
         session['apellido'] = user[2]
         return redirect(url_for('tasks'))
@@ -64,7 +64,19 @@ def login():
 
 @app.route('/tasks', methods=['GET'])
 def tasks():
-    return render_template('tasks.html')
+    email = session['email']
+    conn = psycopg2.connect('dbname=gestion_tareas_db user=postgres password=admin.1302')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tareas WHERE email = %s", [email])
+    tasks = cur.fetchall()
+
+    insertObject = []
+    columnNames = [column[0] for column in cur.description]
+    for record in tasks:
+        insertObject.append(dict(zip(columnNames, record)))
+    cur.close()
+
+    return render_template('tasks.html', tasks = insertObject)
 
 @app.route('/logout')
 def logout():
