@@ -112,8 +112,9 @@ def newUser():
         sql = "INSERT INTO usuario (nombre, apellido , email, password) VALUES (%s,%s,%s,%s)"
         data = (nombre, apellido, email, password)
         cur.execute(sql, data)
-        psycopg2.connect.commit()
+        conn.commit()
     return redirect(url_for('tasks'))
+
 
 
 
