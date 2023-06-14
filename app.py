@@ -115,6 +115,16 @@ def newUser():
         conn.commit()
     return redirect(url_for('tasks'))
 
+@app.route('/delete-task', methods=['POST'])
+def deleteTask():
+    conn = psycopg2.connect('dbname=gestion_tareas_db user=postgres password=admin.1302')
+    cur = conn.cursor()
+    id = request.form['id']
+    data = (id,)
+    sql = "DELETE FROM tareas WHERE id = %s"
+    cur.execute(sql,data)
+    conn.commit()
+    return redirect(url_for('tasks'))
 
 
 
